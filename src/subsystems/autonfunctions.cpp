@@ -176,12 +176,19 @@ void driveToPoint(double posY, double posX,bool backward,double speed){
   }
 }
 
-void shootAtPoint(double targetX,double targetY){
+void shootAtPoint(double targetX,double targetY){  //will probaby have to be threaded
+bool on=true;
+double xPos=drive->getState().y.convert(okapi::foot); //get starting X position //initialize
+ double yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
+bool ogSignX= (signbit(xPos-targetX)); //store the original sign of bot-target so that we can detect a change in sign
+bool ogSignY= (signbit(yPos-targetY));
   //shoot at point tells the bot to trigger cata once it reaches the specified point, this is usefull for moving and shooting at the same time while also using PID and Odom
   //this function will not move the bot at all, and should be used before driveToPoint.
-
- double ogXPos=drive->getState().y.convert(okapi::foot); //get starting X position
- double ogYPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
-
-
+while(on){
+ xPos=drive->getState().y.convert(okapi::foot); //get starting X position //update
+ yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
+ if(signbit((xPos-targetX)) != ogSignX &&  signbit((yPos-targetY)) != ogSignY )//if both X and Y have changed signs, it has passed the point
+ launch(void * );
+ on=false; //stop refreshing once it detects the sign change
+}
 }
