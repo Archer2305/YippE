@@ -26,7 +26,7 @@ void updateCata(){
     if(controller.getDigital(ControllerDigital::R2)==1){
        if(limSwitch.isPressed()){
         cata.moveVoltage(12000);
-        pros::delay(1);
+        pros::delay(50);
        }
     if(limSwitch.isPressed()){
         cata.moveVoltage(0);
