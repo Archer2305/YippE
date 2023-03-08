@@ -26,7 +26,7 @@ void updateCata(){
     if(controller.getDigital(ControllerDigital::R2)==1){
        if(limSwitch.isPressed()){
         cata.moveVoltage(12000);
-        pros::delay(300);
+        pros::delay(1);
        }
     if(limSwitch.isPressed()){
         cata.moveVoltage(0);
@@ -34,12 +34,12 @@ void updateCata(){
      
     }
       if((controller.getDigital(ControllerDigital::R2)==0)){
-    if(!limSwitch.isPressed()){
-        cata.moveVoltage(12000); //move down unless button is pressed
-       }
-       if(limSwitch.isPressed()){
-        cata.moveVoltage(0);
-       }
+        if(!limSwitch.isPressed()){
+            cata.moveVoltage(12000); //move down unless button is pressed
+         }
+        if(limSwitch.isPressed()){
+            cata.moveVoltage(0);
+        }
 }
 
 }
