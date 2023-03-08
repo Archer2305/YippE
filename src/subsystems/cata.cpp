@@ -3,7 +3,7 @@
 
 Motor cata(14, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
 ADIButton limSwitch('C', false);
- bool cpsap =false;
+ bool triggered =false;
 // void launch(void *){ //shoot function for auton
 // while (true)
 // {
@@ -24,10 +24,10 @@ ADIButton limSwitch('C', false);
 // }
 void updateCata(){ 
     if(controller.getDigital(ControllerDigital::R2)==1){
-      while(limSwitch.isPressed()){ //lower cata until slip 
+      if(limSwitch.isPressed()){ //lower cata until slip 
         cata.moveVoltage(12000);
        }
-       cata.moveVoltage(0);//stop the cata 
+    //    cata.moveVoltage(0);//stop the cata 
      
     }
       if((controller.getDigital(ControllerDigital::R2)==0)){
