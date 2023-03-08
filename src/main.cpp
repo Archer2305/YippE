@@ -95,6 +95,7 @@ void opcontrol() {
 	okapi::Rate rate;
 	updateDrive();
 	updateIntake();
+	updateCata();
 	rate.delay(100_Hz); 
 	
 	}
