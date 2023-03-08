@@ -3,7 +3,7 @@
 #include "okapi/api/odometry/point.hpp"
 using namespace okapi;
 int state=1; //state stores the brake mode of the drive where 1 is coast(default) and 2 is held 
-Motor rightFront(7, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
+Motor rightFront(6, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
 Motor rightMiddle(12, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// the right motor on he top, back (drive)
 Motor rightBack(10, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// right motor on the bottom,back (drive)
 

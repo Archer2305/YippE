@@ -2,7 +2,7 @@
 #include "cata.hpp"
 
 Motor cata(14, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-ADIButton limSwitch('D', false);
+ADIButton limSwitch('C', false);
 
 void launch(void *){ //shoot function for auton
 while (true)
@@ -26,8 +26,11 @@ void updateCata(){
     if(controller.getDigital(ControllerDigital::R2)==1){
        if(limSwitch.isPressed()){
         cata.moveVoltage(12000);
+        pros::delay(300);
        }
-       cata.moveVoltage(0);
+    if(limSwitch.isPressed()){
+        cata.moveVoltage(0);
+       }
      
     }
       if((controller.getDigital(ControllerDigital::R2)==0)){
