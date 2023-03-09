@@ -187,8 +187,9 @@ bool ogSignY= (signbit(yPos-targetY));
 while(on){
  xPos=drive->getState().y.convert(okapi::foot); //get starting X position //update
  yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
- if(signbit((xPos-targetX)) != ogSignX &&  signbit((yPos-targetY)) != ogSignY )//if both X and Y have changed signs, it has passed the point
-//  launch
- on=false; //stop refreshing once it detects the sign change
+ if(signbit((xPos-targetX)) != ogSignX &&  signbit((yPos-targetY)) != ogSignY ){//if both X and Y have changed signs, it has passed the point
+  Launch=true;
+  on=false; //stop refreshing once it detects the sign change
 }
 }
+} 

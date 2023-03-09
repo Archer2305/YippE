@@ -7,15 +7,13 @@ void updateIntake(){
         intakeMotor.moveVelocity(0);// stop if there is no input
 
     } else{
-    if (controller.getDigital(ControllerDigital::L1 ) == 1 && (!limSwitch.isPressed())){
+    if (controller.getDigital(ControllerDigital::L1 ) == 1 ){
         intakeMotor.moveVelocity(-600); //intake when positive
-    } else{
-        intakeMotor.moveVelocity(0);// stop if there is no input
-    }
+    } 
     if (controller.getDigital(ControllerDigital::R1 ) == 1 && (!limSwitch.isPressed())){
         intakeMotor.moveVelocity(600); //intake when positive
     }
-    else{
+    if(controller.getDigital(ControllerDigital::R1 ) == 0 && (controller.getDigital(ControllerDigital::L1 ) == 0)){
         intakeMotor.moveVelocity(0);// stop if there is no input
     }
 }
