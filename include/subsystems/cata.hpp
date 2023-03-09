@@ -4,3 +4,4 @@ extern Motor cata;
 extern ADIButton limSwitch;
 void updateCata();
 void launch(void*);
+extern  bool Launch ;

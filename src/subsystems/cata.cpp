@@ -3,25 +3,27 @@
 
 Motor cata(14, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
 ADIButton limSwitch('C', false);
- bool triggered =false;
-// void launch(void *){ //shoot function for auton
-// while (true)
-// {
-//   okapi::Rate rate;
-// while(limSwitch.isPressed()){ //lower cata until slip 
-//         cata.moveVoltage(12000);
-//        }
-//        cata.moveVoltage(0);//stop the cata 
-
-//         if(!limSwitch.isPressed()){
-//         cata.moveVoltage(12000); //move down unless button is pressed
-//        }
-//        if(limSwitch.isPressed()){
-//         cata.moveVoltage(0);
-//        }
-//        rate.delay(100_Hz); 
-// }
-// }
+ bool Launch =false;
+ 
+void launch(void *){ //shoot function for auton
+while (true){
+  okapi::Rate rate;
+  if(Launch==true){ //Launch setting launch to true wil trigger the cata 
+  if(limSwitch.isPressed()){
+            cata.moveVoltage(12000);
+            pros::delay(100);
+        }
+if(!limSwitch.isPressed()){
+            cata.moveVoltage(12000); //move down unless button is pressed
+         }
+        if(limSwitch.isPressed()){
+            cata.moveVoltage(0);
+            Launch=false;
+        }
+}
+rate.delay(10_Hz);
+} 
+}
 void updateCata(){ 
     if(controller.getDigital(ControllerDigital::R2)==1){
       if(limSwitch.isPressed()){ //lower cata until slip 
