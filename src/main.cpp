@@ -1,4 +1,5 @@
 #include "main.h"
+#include "pros/rtos.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -24,7 +25,9 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+ADIButton limSwitch('C', false);
+
+	// pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -59,6 +62,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+
 	updateAuton();
 }
 
@@ -76,6 +80,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	pros::delay(240);	
 	// pros::Controller master(pros::E_CONTROLLER_MASTER);
 	// pros::Motor left_mtr(1);
 	// pros::Motor right_mtr(2);
@@ -96,6 +101,7 @@ void opcontrol() {
 	updateDrive();
 	updateIntake();
 	updateCata();
+	updateSkills();
 	rate.delay(100_Hz); 
 	
 	}

@@ -10,7 +10,7 @@ void updateIntake(){
     if (controller.getDigital(ControllerDigital::L1 ) == 1 ){
         intakeMotor.moveVelocity(-600); //intake when positive
     } 
-    if (controller.getDigital(ControllerDigital::R1 ) == 1 && (!limSwitch.isPressed())){
+    if (controller.getDigital(ControllerDigital::R1 ) == 1 && (limSwitch.isPressed())){
         intakeMotor.moveVelocity(600); //intake when positive
     }
     if(controller.getDigital(ControllerDigital::R1 ) == 0 && (controller.getDigital(ControllerDigital::L1 ) == 0)){

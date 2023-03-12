@@ -23,10 +23,29 @@ MotorGroup rightDrive({rightFront,rightMiddle,rightBack});//define the left side
     .buildOdometry();
     //this creates a drive as an object with PID and the default odometry functions, most of the default odom functions suck tho so we make our own in odom files
 
+void updateSkills(){
+double prevX =0; //this is how to get current x position 
+double prevY=0; //this is how to get current y position 
+double newX=0;
+double newY=0;
+double distance=0;
 
+if(controller.getDigital(ControllerDigital::up) == 1){
+  newX = drive->getState().y.convert(okapi::foot);
+  newY = drive->getState().x.convert(okapi::foot);
+  distance=sqrt(pow(newX - prevX, 2.0) + pow(newY - prevY, 2.0));
+  pros::lcd::set_text(3, (std::to_string(distance)+ std::to_string(inertial.controllerGet())));
+
+if(controller.getDigital(ControllerDigital::down) == 1){
+  prevX = newX;
+  prevY = newY;
+}
+
+}
+}
   void updateDrive(){
-      pros::lcd::set_text(1, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
-      pros::lcd::set_text(2, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+      pros::lcd::set_text(2, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+      pros::lcd::set_text(1, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
 
     // drive -> getModel() -> tank(-translate1.power, -translate1.power);
     // if(controller.getAnalog(ControllerAnalog::leftX)==0){

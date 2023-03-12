@@ -16,3 +16,7 @@ extern double ogYPost;
 extern double distance;
 extern double targetAngle;
 void shootAtPoint(double targetX,double targetY);
+void shootAtPointThread(void * );
+extern bool on;
+extern double targetX;
+extern double targetY;

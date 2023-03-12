@@ -5,10 +5,14 @@ okapi::IMU  inertial = IMU(16);
 double initAngle=0;
 // double targetF;
 double prevPos=0;
+double targetX=0;
+double targetY=0;
+bool on=false;
+
 void roller(){
-    leftDrive.moveVelocity(-25);//set the drivetrain to move back at 25rpm
-    rightDrive.moveVelocity(-25);//we do 25 rpm to reduce the torque needed to do the roller.
-    pros::delay(400);
+    leftDrive.moveVelocity(-50);//set the drivetrain to move back at 25rpm
+    rightDrive.moveVelocity(-50);//we do 25 rpm to reduce the torque needed to do the roller.
+    pros::delay(300);
     // intakeMotor.moveVelocity(600); //move the roller at max speed
     // pros::delay(200); //wait half a second to allow roller to spin to our color 
     // leftDrive.moveVelocity(0);
@@ -18,8 +22,11 @@ void roller(){
     //new 
 
   //  prevPos= intakeMotor.getPosition();
-   intakeMotor.moveRelative( 606, 600);
-   pros::delay(300);
+   intakeMotor.moveRelative( -180, 600);
+   pros::delay(100);
+    leftDrive.moveVelocity(0);//set the drivetrain to move back at 25rpm
+    rightDrive.moveVelocity(0);
+  //  pros::delay(300);
 //    while(intakeMotor.getPosition()<prevPos+360){
 //     intakeMotor.moveVelocity(600);
 //    }
@@ -70,7 +77,7 @@ void driveBlorward(double distance, double scalar) {
 
     double distTravelled = 0; 
 
-     while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity())>10) { //pid shit i think idk  
+     while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity())>15) { //pid shit i think idk  
         double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
         double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
 
@@ -123,23 +130,24 @@ void driveBackward(double distance, double scalar=1) {
 void turnToAngle(double targetAngle){ //turn non-relitive to given target (degrees)
    // angle in degrees
 
-    okapi::IterativePosPIDController rotatePID = okapi::IterativeControllerFactory::posPID(0.056, 0., 0.000906);
+    okapi::IterativePosPIDController rotatePID = okapi::IterativeControllerFactory::posPID(0.025, 0.05,0.00054);
     //ani: 0.4553769998, 0.001, 0.01049997
+    // 00159
     
     rotatePID.setTarget(targetAngle);
 
     // double initAngle = drive->getState().theta.convert(okapi::degree);
     double initAngle = inertial.controllerGet(); 
 
-    while (abs(targetAngle - initAngle) >= 3 || abs(leftDrive.getActualVelocity())>10) {
+    while (abs(targetAngle - initAngle) >= 3 || abs(leftDrive.getActualVelocity())>15) {
         //condition: abs(targetAngle - initAngle) >= 3 || abs(leftDrive.getActualVelocity())>300
         // initAngle = drive->getState().theta.convert(okapi::degree);
-        initAngle = inertial.controllerGet(); 
+        initAngle = inertial.controllerGet();
         double vel = rotatePID.step(initAngle);
         drive -> getModel() -> tank(vel, -vel);//turn faster by moving the other side the oppisite way
         pros::delay(20);
     }
-    
+
     rotatePID.reset();
 
 
@@ -171,25 +179,53 @@ void driveToPoint(double posY, double posX,bool backward,double speed){
   if(posX-ogXPos>0){  //swapped the signs in order to go backwards 
     targetAngle=((atan((posX-ogXPos)/(posY-ogYPos))*(180/3.14159)+90)*-1); //invert and make it from 0 to -180 
   }
+  
     turnToAngle((targetAngle));
     driveBackward(-distance,speed);
   }
 }
 
-void shootAtPoint(double targetX,double targetY){  //will probaby have to be threaded
-bool on=true;
-double xPos=drive->getState().y.convert(okapi::foot); //get starting X position //initialize
- double yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
-bool ogSignX= (signbit(xPos-targetX)); //store the original sign of bot-target so that we can detect a change in sign
-bool ogSignY= (signbit(yPos-targetY));
+void shootAtPointThread(void*){  
+okapi::Rate rate;
+while(true){
+  // controller.rumble(".");
+if(on){
+   
+double xPos = drive->getState().y.convert(okapi::foot); //get starting X position //initialize
+double yPos = drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
+int ogSignX = (signbit(xPos-targetX)); //store the original sign of bot-target so that we can detect a change in sign
+int ogSignY = (signbit(yPos-targetY));
+
   //shoot at point tells the bot to trigger cata once it reaches the specified point, this is usefull for moving and shooting at the same time while also using PID and Odom
   //this function will not move the bot at all, and should be used before driveToPoint.
 while(on){
+  pros::lcd::set_text(1, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+   pros::lcd::set_text(2, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+
  xPos=drive->getState().y.convert(okapi::foot); //get starting X position //update
  yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
+ if(targetX==0||targetY==0){
+if(signbit((xPos-targetX)) != ogSignX ||  signbit((yPos-targetY)) != ogSignY ){//if both X and Y have changed signs, it has passed the point
+  Launch=true;
+  on=false; //stop refreshing once it detects the sign change
+ }
+ }else{
  if(signbit((xPos-targetX)) != ogSignX &&  signbit((yPos-targetY)) != ogSignY ){//if both X and Y have changed signs, it has passed the point
   Launch=true;
   on=false; //stop refreshing once it detects the sign change
+ }
+ }
+pros::delay(1);
 }
-}
+
 } 
+rate.delay(10_Hz);
+}
+}
+
+void shootAtPoint(double TARGETX, double TARGETY){
+  targetX=TARGETX;
+  targetY=TARGETY;
+  on=true;
+}
+
