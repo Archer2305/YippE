@@ -5,3 +5,4 @@ extern ADIButton limSwitch;
 void updateCata();
 void launch(void*);
 extern  bool Launch ;   
+void updatePistons();

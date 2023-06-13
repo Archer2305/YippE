@@ -18,7 +18,8 @@ MotorGroup rightDrive({rightFront,rightMiddle,rightBack});//define the left side
 // MotorGroup left(leftFront,leftTop,leftBottom);
   std::shared_ptr<OdomChassisController> drive =ChassisControllerBuilder()
     .withMotors(leftDrive, rightDrive) //defines the left and right side of the drive
-    .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 15_in}, okapi::imev5BlueTPR*  5./3.})
+    // .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 15_in}, okapi::imev5BlueTPR*  5./3.})
+    .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 14_in}, okapi::imev5BlueTPR*  5./3.})
     .withOdometry() //specifies the tracking wheels dimentions
     .buildOdometry();
     //this creates a drive as an object with PID and the default odometry functions, most of the default odom functions suck tho so we make our own in odom files
@@ -44,9 +45,11 @@ if(controller.getDigital(ControllerDigital::down) == 1){
 }
 }
   void updateDrive(){
+    // drive->getState().x.convert(okapi::foot);
       pros::lcd::set_text(2, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
       pros::lcd::set_text(1, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
 
+      pros::lcd::set_text(3, std::to_string(inertial.controllerGet()));
     // drive -> getModel() -> tank(-translate1.power, -translate1.power);
     // if(controller.getAnalog(ControllerAnalog::leftX)==0){
     //  drive -> getModel() -> arcade(0.5*controller.getAnalog(ControllerAnalog::rightY), 0.5 * controller.getAnalog((ControllerAnalog::rightX)));

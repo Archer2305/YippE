@@ -1,5 +1,6 @@
 #include "main.h"
-int route=1;
+int route=10;
+pros::ADIDigitalOut pistoNN ('F');
 
 void updateAuton(){
 // turnToAngle(90);
@@ -16,6 +17,7 @@ if(route==1){
     driveBackward(-0.5,1);
     // pros::delay(300);
     Launch=true;
+    
     pros::delay(500);
     driveForward(0.75); 
     turnToAngle(-130);
@@ -31,6 +33,10 @@ if(route==1){
     rightDrive.moveVelocity(-400);
     pros::delay(400);
 roller();
+driveForward(1);
+turnToAngle(-135);
+driveForward(2);
+pistoNN.set_value(true);
 //  leftDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  rightDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  leftDrive.moveVelocity(600);
@@ -38,13 +44,13 @@ roller();
 // turnToAngle(-155);
 // driveBlorward(3,2);
 // Launch=true;
-turnToAngle(-135);
-driveForward(1);
-turnToAngle(45);
-driveForward(1);
-    Launch=true;
+// turnToAngle(-135);
+// driveForward(1);
+// turnToAngle(45);
+// driveForward(1);
+//     Launch=true;
 //  Launch=true;
-    
+
 }
 if(route==2){
      roller();
@@ -76,19 +82,24 @@ if(route==2){
 }
   if(route==3){ //Right
     driveForward(2);
-    turnToAngle(35);
-    driveForward(0.5);
+    turnToAngle(25);
     Launch=true;
+
+    driveForward(0.5);
+    pros::delay(300);
     turnToAngle(-30);
-    driveBackward(-3.4,0.9);
+    driveBackward(-2.5,0.9);
      leftDrive.moveVelocity(-400);
     rightDrive.moveVelocity(-400);
-    pros::delay(300);
+    pros::delay(600);
+    leftDrive.moveVelocity(-25);
+    rightDrive.moveVelocity(-25);
+    pros::delay(600);
 roller();
+/*
 driveForward(1);
-driveToPoint(0.2,1.3,false,1);
 intakeMotor.moveVelocity(600);
-driveToPoint(-2,6,true,0.75);
+driveToPoint(-4,6,true,0.75);
 pros::delay(100);
 intakeMotor.moveVelocity(0);
 turnToAngle(45);
@@ -98,6 +109,7 @@ intakeMotor.moveVelocity(600);
 driveBackward(4,0.75);
 shootAtPoint(-3,1);
 driveToPoint(-2,2,false,1);
+*/
   }
   if(route==4){ //skills
     roller();
@@ -129,6 +141,72 @@ driveToPoint(-2,2,false,1);
     roller();
 
   }
+  if(route==5){
+    roller();
+    pros::delay(100);
+driveForward(1);
+turnToAngle(120);
+intakeMotor.moveVelocity(600);
+
+driveBackward(-1.8,0.75);
+intakeMotor.moveVelocity(0);
+
+driveBackward(-1,1);
+turnToAngle(90);
+ leftDrive.moveVelocity(-100);
+ rightDrive.moveVelocity(-100);
+ pros::delay(500);
+roller();
+driveForward(1);
+turnToAngle(45);
+driveForward(9.285);
+turnToAngle(-130);
+leftDrive.moveVelocity(-100);
+ rightDrive.moveVelocity(-100);
+ pros::delay(500);
+roller();
+pros::delay(100);
+driveForward(1);
+turnToAngle(-120);
+intakeMotor.moveVelocity(600);
+
+driveBackward(-1.8,0.75);
+intakeMotor.moveVelocity(0);
+
+driveBackward(-1,1);
+turnToAngle(-90);
+ leftDrive.moveVelocity(-100);
+ rightDrive.moveVelocity(-100);
+ pros::delay(500);
+// turnToAngle(-90);
+// intakeMotor.moveVelocity(600);
+// driveBackward(3.3,0.5);
+// intakeMotor.moveVelocity(0);
+// turnToAngle(-45);
+
+// Launch=true;
+// */
+  }
+  if(route==10){
+    // driveBlorward(2, 0.5); 
+    //driveToPoint(2 , 2,false,1); 
+    //pros::delay(2000);
+    //driveToPoint(1 , 1.732,false,1); ///should be 30
+    //pros::delay(2000); 
+    //driveToPoint(3, 0, false, 1);
+    //pros::delay(2000);
+    //driveToPoint(-1, -1, false, 1);
+    //driveToPoint(1, 1, true, 1);
+    driveToPoint(1, 2, false, 1);
+    pros::delay(500);
+    driveToPoint(0, 2, false, 1);
+    //driveToPoint();
+    //turnToAngle(-135);
+    //pros::delay(2000);
+    //turnToAngle(45);
+    //pros::delay(2000);
+    
+  }
   if(route==-1){
 Launch=true;
 
@@ -137,4 +215,5 @@ Launch=true;
 pros::delay(5000);
 Launch=true;
   }
+
 }  

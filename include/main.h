@@ -81,6 +81,8 @@ void opcontrol(void);
 #include "subsystems/cata.hpp"
 #include "subsystems/autonfunctions.hpp"
 #include "subsystems/auton.hpp"
+#include "subsystems/expansion.hpp"
+
     
 //#include <iostream>
 #endif

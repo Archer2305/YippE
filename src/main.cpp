@@ -1,5 +1,6 @@
 #include "main.h"
 #include "pros/rtos.h"
+pros::ADIDigitalOut band ('H');
 
 /**
  * A callback function for LLEMU's center button.
@@ -97,11 +98,13 @@ void opcontrol() {
 
 	// 	pros::delay(20);
 	while (true){
+        //   band.set_value(true);    
 	okapi::Rate rate;
 	updateDrive();
 	updateIntake();
 	updateCata();
 	updateSkills();
+	updateExpansion();
 	rate.delay(100_Hz); 
 	
 	}

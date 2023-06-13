@@ -1,5 +1,6 @@
 #include "main.h"
 #include "intake.hpp"
+#include <sstream>
 #include <utility>
 okapi::IMU  inertial = IMU(16);
 double initAngle=0;
@@ -10,9 +11,9 @@ double targetY=0;
 bool on=false;
 
 void roller(){
-    leftDrive.moveVelocity(-50);//set the drivetrain to move back at 25rpm
-    rightDrive.moveVelocity(-50);//we do 25 rpm to reduce the torque needed to do the roller.
-    pros::delay(300);
+    // leftDrive.moveVelocity(-50);//set the drivetrain to move back at 25rpm
+    // rightDrive.moveVelocity(-50);//we do 25 rpm to reduce the torque needed to do the roller.
+    // pros::delay(500);
     // intakeMotor.moveVelocity(600); //move the roller at max speed
     // pros::delay(200); //wait half a second to allow roller to spin to our color 
     // leftDrive.moveVelocity(0);
@@ -22,7 +23,7 @@ void roller(){
     //new 
 
   //  prevPos= intakeMotor.getPosition();
-   intakeMotor.moveRelative( -180, 600);
+   intakeMotor.moveRelative( -230, 600);
    pros::delay(100);
     leftDrive.moveVelocity(0);//set the drivetrain to move back at 25rpm
     rightDrive.moveVelocity(0);
@@ -77,7 +78,8 @@ void driveBlorward(double distance, double scalar) {
 
     double distTravelled = 0; 
 
-     while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity())>15) { //pid shit i think idk  
+     while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity())>15) { //pid shit i think idk 
+    // while(true){ 
         double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
         double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
 
@@ -124,7 +126,35 @@ void driveBackward(double distance, double scalar=1) {
     drive -> getModel() -> tank(0, 0); //stop the drive once target is met
 }
 
+void drive_dir(double distance, double scalar=1) {    
+    okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.75, 0.01, 0.01); //create a new drive object with specified pid
 
+    const double target = distance; //idk why not just use distance
+
+    drivePID.setTarget(target); //tels PROS: to move the drive using pid to distance
+
+    double orgPosX = drive->getState().x.convert(okapi::foot); //store the orginal position
+    double orgPosY = drive->getState().y.convert(okapi::foot);
+
+    double distTravelled = 0; 
+
+    while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
+    // while(true){   
+        double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
+        double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
+
+        distTravelled = ((distance > 0) ? 1 : -1) * sqrt(pow(dx,2) + pow(dy,2));
+     
+        double vel = drivePID.step(distTravelled);
+
+        drive -> getModel() -> tank(vel * scalar, vel * scalar);
+
+        pros::delay(10);
+    }
+
+    drivePID.reset(); //reset everything to move relative 
+    drive -> getModel() -> tank(0, 0); //stop the drive once target is met
+}
 
 
 void turnToAngle(double targetAngle){ //turn non-relitive to given target (degrees)
@@ -155,14 +185,38 @@ void turnToAngle(double targetAngle){ //turn non-relitive to given target (degre
 
 }
 
+#define TO_DEG  (180 / 3.14159265)
+
 void driveToPoint(double posY, double posX,bool backward,double speed){
   double ogXPos=drive->getState().y.convert(okapi::foot); //get starting X position
   double ogYPos=drive->getState().x.convert(okapi::foot);//get starting Y position
+  
   double distance = sqrt(pow((posX-ogXPos),2)+ pow((posY-ogYPos),2)); //calculate distance using distnace formula 
   double targetAngle = 0;
-
+//----------------n_algo-----------
+  double dx = posX-ogXPos;
+  double dy = posY-ogYPos;
   
-  if(backward==false){ //If driving shooter foward 
+  if (!dx && !dy) {
+    return;
+  }
+
+  if (dx == 0) {
+    targetAngle = (dy > 0) ? 0 : 180;
+  } else if (dx > 0) {
+    targetAngle = atan(dy/dx) * TO_DEG;
+  } else if (dx < 0) {
+    targetAngle = 180 + (atan(dy/dx)) * TO_DEG;
+  }
+
+  //normalizing
+  if (targetAngle > 180) {
+      targetAngle -= 360;
+  }
+
+  //double invertedSlope=(posX-ogXPos)/(posY-ogYPos); //og alg
+ // targetAngle = atan(invertedSlope)*(180/3.14159);  //og alg
+/* if(backward==false){ //If driving shooter foward 
       if((posX-ogXPos)>=0 ){ //right
     targetAngle=((atan((posX-ogXPos)/(posY-ogYPos))*(180/3.14159)-90)*-1);  //invert and make it from 0 180
   }
@@ -182,7 +236,36 @@ void driveToPoint(double posY, double posX,bool backward,double speed){
   
     turnToAngle((targetAngle));
     driveBackward(-distance,speed);
+  }*/
+  //targetAngle += 90;
+  //---------------
+
+
+//--------------------
+
+  //return; //------------------------
+
+  if(backward == false){
+    turnToAngle(targetAngle);
+    driveBlorward(distance,speed);
   }
+
+  if(backward == true){ //If driving intake foward
+          //pros::lcd::set_text(6, std::string("backwrds"));
+    if (targetAngle >= 0){
+      targetAngle += -180;
+      //pros::lcd::set_text(7, std::string("pos"));
+    } else if (targetAngle < 0){
+      targetAngle += 180;
+      //pros::lcd::set_text(7, std::string("neg"));
+    }
+    turnToAngle((targetAngle));
+    driveBackward(-distance,speed);
+  }
+  std::stringstream ss;
+  ss << "targetAngle: " << targetAngle << std::endl;
+
+  pros::lcd::set_text(5, ss.str());
 }
 
 void shootAtPointThread(void*){  
@@ -200,7 +283,7 @@ int ogSignY = (signbit(yPos-targetY));
   //this function will not move the bot at all, and should be used before driveToPoint.
 while(on){
   pros::lcd::set_text(1, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
-   pros::lcd::set_text(2, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+  pros::lcd::set_text(2, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the Y coordinate on the LCD of the screen per tick
 
  xPos=drive->getState().y.convert(okapi::foot); //get starting X position //update
  yPos=drive->getState().x.convert(okapi::foot);//get starting Y position   /swap the X and Y to make it match the cartesian plane.
