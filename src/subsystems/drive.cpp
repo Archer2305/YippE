@@ -1,8 +1,11 @@
 #include "main.h"
 //#include "drive.hpp"  
 #include "okapi/api/odometry/point.hpp"
+
 using namespace okapi;
-int state=1; //state stores the brake mode of the drive where 1 is coast(default) and 2 is held 
+
+int state = 1; //state stores the brake mode of the drive where 1 is coast(default) and 2 is held 
+
 Motor rightFront(6, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
 Motor rightMiddle(12, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// the right motor on he top, back (drive)
 Motor rightBack(10, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// right motor on the bottom,back (drive)
@@ -16,33 +19,42 @@ MotorGroup rightDrive({rightFront,rightMiddle,rightBack});//define the left side
 
 //imu 7
 // MotorGroup left(leftFront,leftTop,leftBottom);
-  std::shared_ptr<OdomChassisController> drive =ChassisControllerBuilder()
+  std::shared_ptr<OdomChassisController> drive = ChassisControllerBuilder()
     .withMotors(leftDrive, rightDrive) //defines the left and right side of the drive
     // .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 15_in}, okapi::imev5BlueTPR*  5./3.})
-    .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 14_in}, okapi::imev5BlueTPR*  5./3.})
+    .withDimensions(AbstractMotor::gearset::blue, {{3.25_in, 14_in}, okapi::imev5BlueTPR*  5./3.})
     .withOdometry() //specifies the tracking wheels dimentions
     .buildOdometry();
     //this creates a drive as an object with PID and the default odometry functions, most of the default odom functions suck tho so we make our own in odom files
 
+void motors_init() {
+    rightFront.tarePosition();
+    rightMiddle.tarePosition();
+    rightBack.tarePosition();
+
+    leftFront.tarePosition();
+    leftMiddle.tarePosition();
+    leftBack.tarePosition();
+}
+
 void updateSkills(){
-double prevX =0; //this is how to get current x position 
-double prevY=0; //this is how to get current y position 
-double newX=0;
-double newY=0;
-double distance=0;
+    double prevX = 0; //this is how to get current x position 
+    double prevY = 0; //this is how to get current y position 
+    double newX = 0;
+    double newY = 0;
+    double distance = 0;
 
-if(controller.getDigital(ControllerDigital::up) == 1){
-  newX = drive->getState().y.convert(okapi::foot);
-  newY = drive->getState().x.convert(okapi::foot);
-  distance=sqrt(pow(newX - prevX, 2.0) + pow(newY - prevY, 2.0));
-  pros::lcd::set_text(3, (std::to_string(distance)+ std::to_string(inertial.controllerGet())));
+    if (controller.getDigital(ControllerDigital::up) == 1){
+      newX = drive->getState().y.convert(okapi::foot);
+      newY = drive->getState().x.convert(okapi::foot);
+      distance=sqrt(pow(newX - prevX, 2.0) + pow(newY - prevY, 2.0));
+      pros::lcd::set_text(3, (std::to_string(distance) + std::to_string(inertial.controllerGet())));
 
-if(controller.getDigital(ControllerDigital::down) == 1){
-  prevX = newX;
-  prevY = newY;
-}
-
-}
+        if (controller.getDigital(ControllerDigital::down) == 1){
+          prevX = newX;
+          prevY = newY;
+        }
+    }
 }
   void updateDrive(){
     // drive->getState().x.convert(okapi::foot);
@@ -56,17 +68,16 @@ if(controller.getDigital(ControllerDigital::down) == 1){
     // }
     
     // if(controller.getAnalog(ControllerAnalog::rightX)==0){
-    drive -> getModel() -> arcade(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog((ControllerAnalog::leftX)));
+    drive -> getModel() -> arcade(controller.getAnalog(ControllerAnalog::leftY), controller.getAnalog((ControllerAnalog::rightX)));
     // }
     if (controller.getDigital(ControllerDigital::X) == 1){
       leftDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
       rightDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
-      state=2;
+      state = 2;
     }
     else if (controller.getDigital(ControllerDigital::Y) == 1){
       leftDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
       rightDrive.setBrakeMode(AbstractMotor::brakeMode::coast);
-      state=1;
+      state = 1;
     }
- 
   }

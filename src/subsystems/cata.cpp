@@ -6,7 +6,7 @@ Motor cata(14, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::d
 ADIButton limSwitch('C', false);
  bool Launch =false;
 
- static pros::Task SHOOT (shootAtPointThread);
+static pros::Task SHOOT (shootAtPointThread);
 static pros::Task launchj (launch);
 
 

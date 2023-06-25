@@ -13,3 +13,4 @@ extern Controller controller;
 extern int state;
 void updateDrive();
 void updateSkills();
+void motors_init();

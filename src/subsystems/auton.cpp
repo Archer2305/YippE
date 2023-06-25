@@ -1,10 +1,10 @@
 #include "main.h"
-int route=10;
+constexpr int route = 10;
 pros::ADIDigitalOut pistoNN ('F');
 
 void updateAuton(){
 // turnToAngle(90);
-if(route==1){
+if (route == 1){
      roller();
     driveForward(0.6);//drive foward to prevent clashing into the wal 
     // pros::delay(300);
@@ -16,7 +16,7 @@ if(route==1){
     turnToAngle(-30);
     driveBackward(-0.5,1);
     // pros::delay(300);
-    Launch=true;
+    Launch = true;
     
     pros::delay(500);
     driveForward(0.75); 
@@ -32,11 +32,11 @@ if(route==1){
     leftDrive.moveVelocity(-400);
     rightDrive.moveVelocity(-400);
     pros::delay(400);
-roller();
-driveForward(1);
-turnToAngle(-135);
-driveForward(2);
-pistoNN.set_value(true);
+        roller();
+        driveForward(1);
+        turnToAngle(-135);
+        driveForward(2);
+        pistoNN.set_value(true);
 //  leftDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  rightDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  leftDrive.moveVelocity(600);
@@ -52,7 +52,7 @@ pistoNN.set_value(true);
 //  Launch=true;
 
 }
-if(route==2){
+if (route == 2){
      roller();
     shootAtPoint(0.001,1);
     driveToPoint(0,2,false,1);
@@ -187,9 +187,15 @@ turnToAngle(-90);
 // Launch=true;
 // */
   }
-  if(route==10){
-    // driveBlorward(2, 0.5); 
-    //driveToPoint(2 , 2,false,1); 
+
+/*note to self:
+    reset IMU when it is detected drifting when not moving*/
+
+  if (route==10){
+    //printf("init x: %lf, init y: %lf\n", drive->getState().y.convert(okapi::foot), drive->getState().x.convert(okapi::foot));
+
+    drive_dis(2, 1); 
+    //driveToPoint(2, 2, false, 1); 
     //pros::delay(2000);
     //driveToPoint(1 , 1.732,false,1); ///should be 30
     //pros::delay(2000); 
@@ -197,16 +203,27 @@ turnToAngle(-90);
     //pros::delay(2000);
     //driveToPoint(-1, -1, false, 1);
     //driveToPoint(1, 1, true, 1);
-    driveToPoint(1, 2, false, 1);
-    pros::delay(500);
-    driveToPoint(0, 2, false, 1);
-    //driveToPoint();
-    //turnToAngle(-135);
+/*
+    pros::delay(2000);
+    driveToPoint(1, 2, false, 0.8);
+    pros::delay(2000);
+    driveToPoint(0, 2, false, 0.8);
+    pros::delay(2000);
+    driveToPoint(0, 0, false, 0.8);
+    pros::delay(2000);
+  */  
+    //driveToPoint(0, 1, false, 1);
+    //turnToAngle(180);
+    //pros::delay(500);
+    //turnToAngle(-160);
+    //printf("hello\n");
+    //pros::delay(500);
+    //turnToAngle(30);
     //pros::delay(2000);
     //turnToAngle(45);
     //pros::delay(2000);
-    
   }
+
   if(route==-1){
 Launch=true;
 

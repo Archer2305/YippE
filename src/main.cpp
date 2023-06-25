@@ -1,5 +1,6 @@
 #include "main.h"
 #include "pros/rtos.h"
+
 pros::ADIDigitalOut band ('H');
 
 /**
@@ -26,9 +27,13 @@ void on_center_button() {
  */
 void initialize() {
 	pros::lcd::initialize();
-ADIButton limSwitch('C', false);
+    ADIButton limSwitch('C', false);
 
-	// pros::lcd::set_text(1, "Hello PROS User!");
+    motors_init();
+
+	pros::lcd::set_text(1, std::to_string(sizeof(double)));
+
+//    pros::delay(2000);
 
 	pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -62,7 +67,17 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
+
+using namespace okapi::literals;
+
 void autonomous() {
+    okapi::OdomState zero_state = {
+            .x = 0_ft,
+            .y = 0_ft,
+            .theta = 0_deg 
+    };
+    drive->getOdometry()->setState(zero_state); 
+    motors_init();
 
 	updateAuton();
 }
@@ -80,8 +95,10 @@ void autonomous() {
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
 void opcontrol() {
 	pros::delay(240);	
+    drive_dis(2, 1);
 	// pros::Controller master(pros::E_CONTROLLER_MASTER);
 	// pros::Motor left_mtr(1);
 	// pros::Motor right_mtr(2);
@@ -97,16 +114,17 @@ void opcontrol() {
 	// 	right_mtr = right;
 
 	// 	pros::delay(20);
-	while (true){
+	while (true) {
         //   band.set_value(true);    
-	okapi::Rate rate;
-	updateDrive();
-	updateIntake();
-	updateCata();
-	updateSkills();
-	updateExpansion();
-	rate.delay(100_Hz); 
-	
+        okapi::Rate rate;
+
+        updateDrive();
+        updateIntake();
+        updateCata();
+//      updateSkills();
+//      updateExpansion();
+
+        rate.delay(100_Hz);         
 	}
 	
 }

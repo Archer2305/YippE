@@ -15,7 +15,7 @@ extern double ogXPos;
 extern double ogYPost;
 extern double distance;
 extern double targetAngle;
-void drive_dir(double distance, double scalar);    
+void drive_dis(double distance, double scalar);    
 void shootAtPoint(double targetX,double targetY);
 void shootAtPointThread(void * );
 extern bool on;
