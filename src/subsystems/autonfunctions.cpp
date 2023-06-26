@@ -98,7 +98,7 @@ void driveBlorward(double distance, double scalar=1) {
     drive -> getModel() -> tank(0, 0); //stop the drive once target is met
 }
 
-#if 0
+
 void driveBackward(double distance, double scalar=1) {    
     okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.75, 0.01, 0.01); //create a new drive object with specified pid
 
@@ -128,13 +128,13 @@ void driveBackward(double distance, double scalar=1) {
     drivePID.reset(); //reset everything to move relitive 
     drive -> getModel() -> tank(0, 0); //stop the drive once target is met
 }
-#endif 
+
 
 void drive_dis(double distance, double scalar=1) {                                          //init 0.85
       okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.86, 0.00, 0.0000);
     //okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.75, 0.01, 0.01); //create a new drive object with specified pid
 
-    const double target = distance; 
+     double target = distance; 
 
     drivePID.setTarget(target); //tells PROS: to move the drive using pid to distance
 
@@ -143,8 +143,8 @@ void drive_dis(double distance, double scalar=1) {                              
 
     double distTravelled = 0; 
 
-    //while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
-     while (true) {   
+    while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
+     // while (true) {   
         double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
         double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
 
