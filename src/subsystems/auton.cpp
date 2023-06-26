@@ -1,6 +1,6 @@
 #include "main.h"
 constexpr int route = 10;
-pros::ADIDigitalOut pistoNN ('F');
+
 
 void updateAuton(){
 // turnToAngle(90);
