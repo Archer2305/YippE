@@ -1,9 +1,7 @@
 #include "main.h"
-#include "intake.hpp"
-#include <sstream>
-#include <utility>
 
 okapi::IMU  inertial = IMU(16);
+
 double initAngle=0;
 
 // double targetF;
@@ -13,15 +11,16 @@ double targetY = 0;
 bool on = false;
 
 void roller() {
-    // leftDrive.moveVelocity(-50);//set the drivetrain to move back at 25rpm
-    // rightDrive.moveVelocity(-50);//we do 25 rpm to reduce the torque needed to do the roller.
-    // pros::delay(500);
-    // intakeMotor.moveVelocity(600); //move the roller at max speed
-    // pros::delay(200); //wait half a second to allow roller to spin to our color 
-    // leftDrive.moveVelocity(0);
-    // rightDrive.moveVelocity(0);
-    // intakeMotor.moveVelocity(0); //cut everyting besides flywheel
-
+/*
+    leftDrive.moveVelocity(-50);//set the drivetrain to move back at 25rpm
+    rightDrive.moveVelocity(-50);//we do 25 rpm to reduce the torque needed to do the roller.
+    pros::delay(500);
+    intakeMotor.moveVelocity(600); //move the roller at max speed
+    pros::delay(200); //wait half a second to allow roller to spin to our color 
+    leftDrive.moveVelocity(0);
+    rightDrive.moveVelocity(0);
+    intakeMotor.moveVelocity(0); //cut everyting besides flywheel
+*/
     //new 
 
   //  prevPos= intakeMotor.getPosition();
@@ -131,33 +130,49 @@ void driveBackward(double distance, double scalar=1) {
 
 
 void drive_dis(double distance, double scalar=1) {                                          //init 0.85
-      okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.86, 0.00, 0.0000);
+    if (abs(distance) <= 0.01)
+        return;
+
+    okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.86, 0.00, 0.0000);
     //okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.75, 0.01, 0.01); //create a new drive object with specified pid
 
-     double target = distance; 
+    double target = distance; 
 
-    drivePID.setTarget(target); //tells PROS: to move the drive using pid to distance
+    drivePID.setTarget(target); 
+    //tells PROS: to move the drive using pid to distance
 
     double orgPosX = drive->getState().x.convert(okapi::foot); 
     double orgPosY = drive->getState().y.convert(okapi::foot);
+    printf("\n-->  start    => %10.3lf    : state = (%9.5lf, %9.5lf)\n", distance, orgPosX, orgPosY);
 
     double distTravelled = 0; 
 
     while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
      // while (true) {   
-        double dx = drive->getState().x.convert(okapi::foot) - orgPosX;
-        double dy = drive->getState().y.convert(okapi::foot) - orgPosY;
+        double state_x = drive->getState().x.convert(okapi::foot);
+        double state_y = drive->getState().y.convert(okapi::foot);
 
-        distTravelled = ((distance > 0) ? (double)1 : (double)-1) * sqrt(pow(dx, 2) + pow(dy, 2));
+        double dx = state_x - orgPosX;
+        double dy = state_y - orgPosY;
+
+        distTravelled = sqrt(dx * dx + dy * dy);
+        if (distance < 0)
+            distTravelled = -distTravelled;
+
+        printf("     %10.3lf  => %10.3lf    : state = (%10.3lf, %10.3lf)\n", distTravelled, distance, state_x, state_y);      
 
         double vel = drivePID.step(distTravelled);
         
-        printf("distTravelled: %lf, cur_x: %lf, cur_y:%lf\n", 
-            distTravelled, drive->getState().y.convert(okapi::foot), drive->getState().x.convert(okapi::foot));
+        //printf("distTravelled: %lf, cur_x: %lf, cur_y:%lf\n", 
+        //   distTravelled, drive->getState().y.convert(okapi::foot), drive->getState().x.convert(okapi::foot));
 
         drive->getModel()->tank(vel * scalar, vel * scalar);
         pros::delay(16);
     }
+
+    double state_x = drive->getState().x.convert(okapi::foot);
+    double state_y = drive->getState().y.convert(okapi::foot);
+    printf("-->   end      : state = (%10.3lf, %10.3lf)\n", state_x, state_y);
 
     drivePID.reset(); //reset everything to move relative 
     drive->getModel()->tank(0, 0); //stop the drive once target is met
@@ -185,7 +200,7 @@ inline double remap(double d) {
 //shift all angles to relative degree
 
 #define TS      1
-void turnToAngle(double targetAngle) { //turn non-relative to given target (degrees)       //power   err   braking
+void turnToAngle(double targetAngle) { //turn non-relative to given target (degrees)       
     okapi::IterativePosPIDController rotatePID = okapi::IterativeControllerFactory::posPID(
                     (double)0.027, 0.00001, 0.00070); 
 
@@ -297,7 +312,6 @@ void driveToPoint(double posX, double posY, bool backward, double speed){
     turnToAngle(targetAngle);
     drive_dis(-distance,speed);
   }
-
 
   pros::lcd::set_text(4, ss.str());
 }

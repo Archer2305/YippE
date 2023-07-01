@@ -1,10 +1,10 @@
 #include "main.h"
-#include "cata.hpp"
-  int profile=1;
+
+int profile=1;
 
 Motor cata(14, true, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
 ADIButton limSwitch('C', false);
- bool Launch =false;
+bool Launch =false;
 
 static pros::Task SHOOT (shootAtPointThread);
 static pros::Task launchj (launch);

@@ -1,5 +1,5 @@
 #include "main.h"
-//#include "drive.hpp"  
+
 #include "okapi/api/odometry/point.hpp"
 
 using namespace okapi;
@@ -28,7 +28,7 @@ MotorGroup rightDrive({rightFront,rightMiddle,rightBack});//define the left side
     //this creates a drive as an object with PID and the default odometry functions, most of the default odom functions suck tho so we make our own in odom files
 
 void motors_init() {
-    rightFront.tarePosition();
+    printf("RF: %lf", rightFront.get_encoder_units());
     rightMiddle.tarePosition();
     rightBack.tarePosition();
 

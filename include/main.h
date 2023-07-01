@@ -75,6 +75,10 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
+
+#include <sstream>
+#include <utility>
+
 #include "globals.hpp"
 #include "subsystems/drive.hpp"
 #include "subsystems/intake.hpp"
@@ -82,8 +86,8 @@ void opcontrol(void);
 #include "subsystems/autonfunctions.hpp"
 #include "subsystems/auton.hpp"
 #include "subsystems/expansion.hpp"
-
     
+
 //#include <iostream>
 #endif
 

@@ -1,8 +1,14 @@
 #include "main.h"
+
 constexpr int route = 10;
 
-
 void updateAuton(){
+    okapi::OdomState zero_state = {
+            .x = 0_ft,
+            .y = 0_ft,
+            .theta = 0_deg
+    };
+    drive->/*getOdometry()->*/setState(zero_state);
 // turnToAngle(90);
 if (route == 1){
      roller();
@@ -36,7 +42,7 @@ if (route == 1){
         driveForward(1);
         turnToAngle(-135);
         driveForward(2);
-        pistoNN.set_value(true);
+        //pistoNN.set_value(true);          //where is this?
 //  leftDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  rightDrive.setBrakeMode(AbstractMotor::brakeMode::hold);
 //  leftDrive.moveVelocity(600);
@@ -192,6 +198,7 @@ turnToAngle(-90);
     reset IMU when it is detected drifting when not moving*/
 
   if (route==10){
+    pros::delay(280);
     //printf("init x: %lf, init y: %lf\n", drive->getState().y.convert(okapi::foot), drive->getState().x.convert(okapi::foot));
 
     drive_dis(2, 1); 

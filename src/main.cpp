@@ -1,6 +1,18 @@
 #include "main.h"
 #include "pros/rtos.h"
 
+class Application {
+public:
+    Application() {
+        printf("Application init\n");
+    }
+    ~Application() {
+        printf("Application end\n");
+    }
+};
+
+Application App;
+
 pros::ADIDigitalOut band ('H');
 
 /**
@@ -76,7 +88,13 @@ void autonomous() {
             .y = 0_ft,
             .theta = 0_deg 
     };
-    drive->getOdometry()->setState(zero_state); 
+    drive->/*getOdometry()->*/setState(zero_state); 
+    //while (true) {
+        printf("after 0 init: %lf, %lf\n",
+            drive->getState().y.convert(okapi::foot), 
+            drive->getState().x.convert(okapi::foot)); 
+        pros::delay(280);
+    //}
     motors_init();
 
 	updateAuton();
@@ -98,7 +116,7 @@ void autonomous() {
 
 void opcontrol() {
 	pros::delay(240);	
-    drive_dis(2, 1);
+//    drive_dis(2, 1);
 	// pros::Controller master(pros::E_CONTROLLER_MASTER);
 	// pros::Motor left_mtr(1);
 	// pros::Motor right_mtr(2);
@@ -115,12 +133,12 @@ void opcontrol() {
 
 	// 	pros::delay(20);
 	while (true) {
-        //   band.set_value(true);    
+      //band.set_value(true);    
         okapi::Rate rate;
 
         updateDrive();
-        updateIntake();
-        updateCata();
+//      updateIntake();
+//      updateCata();
 //      updateSkills();
 //      updateExpansion();
 
