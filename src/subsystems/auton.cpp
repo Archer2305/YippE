@@ -8,7 +8,7 @@ void updateAuton(){
             .y = 0_ft,
             .theta = 0_deg
     };
-    drive->/*getOdometry()->*/setState(zero_state);
+    drive->setState(zero_state);
 // turnToAngle(90);
 if (route == 1){
      roller();

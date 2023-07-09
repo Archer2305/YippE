@@ -1,17 +1,7 @@
 #include "main.h"
 #include "pros/rtos.h"
 
-class Application {
-public:
-    Application() {
-        printf("Application init\n");
-    }
-    ~Application() {
-        printf("Application end\n");
-    }
-};
-
-Application App;
+using namespace okapi::literals;
 
 pros::ADIDigitalOut band ('H');
 
@@ -41,12 +31,9 @@ void initialize() {
 	pros::lcd::initialize();
     ADIButton limSwitch('C', false);
 
-    motors_init();
+    motors_init();  //
 
-	pros::lcd::set_text(1, std::to_string(sizeof(double)));
-
-//    pros::delay(2000);
-
+	//pros::lcd::set_text(1, std::to_string(sizeof(double)));
 	pros::lcd::register_btn1_cb(on_center_button);
 }
 
@@ -80,7 +67,6 @@ void competition_initialize() {}
  * from where it left off.
  */
 
-using namespace okapi::literals;
 
 void autonomous() {
     okapi::OdomState zero_state = {
@@ -88,16 +74,22 @@ void autonomous() {
             .y = 0_ft,
             .theta = 0_deg 
     };
+
+    motors_init();
+
     drive->/*getOdometry()->*/setState(zero_state); 
+
     //while (true) {
         printf("after 0 init: %lf, %lf\n",
             drive->getState().y.convert(okapi::foot), 
             drive->getState().x.convert(okapi::foot)); 
         pros::delay(280);
     //}
+
     motors_init();
 
-	updateAuton();
+	//updateAuton();
+
 }
 
 /**
@@ -116,7 +108,20 @@ void autonomous() {
 
 void opcontrol() {
 	pros::delay(240);	
-//    drive_dis(2, 1);
+//  drive_dis(2, 1);
+/*
+    auto cur_state = drive->getState();
+    print_state("cur_state", cur_state);
+
+    profile_controller->generatePath(
+        {{cur_state.x, cur_state.y, cur_state.theta}, 
+        {2_ft, 1_ft, 30_deg}}, "Path");          //x y flipped
+
+    profile_controller->setTarget("Path");
+    profile_controller->waitUntilSettled();
+
+    print_cur_state();
+*/
 	// pros::Controller master(pros::E_CONTROLLER_MASTER);
 	// pros::Motor left_mtr(1);
 	// pros::Motor right_mtr(2);
@@ -132,9 +137,10 @@ void opcontrol() {
 	// 	right_mtr = right;
 
 	// 	pros::delay(20);
+
 	while (true) {
       //band.set_value(true);    
-        okapi::Rate rate;
+        okapi::Rate rate;       //wait does this need to be recontructed everytime it loops
 
         updateDrive();
 //      updateIntake();
@@ -144,5 +150,4 @@ void opcontrol() {
 
         rate.delay(100_Hz);         
 	}
-	
 }
