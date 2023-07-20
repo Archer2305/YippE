@@ -2,11 +2,11 @@
 
 using namespace okapi;
 
-extern  bool Launch ;   
+extern  bool Launch;   
 
 extern Motor cata;
 extern ADIButton limSwitch;
 
 void updateCata();
-void launch(void*);
 void updatePistons();
+void launch(void*);

@@ -2,7 +2,7 @@
 
 okapi::IMU  inertial = IMU(16);
 
-double initAngle=0;
+double initAngle = 0;
 
 // double targetF;
 double prevPos = 0;
@@ -34,7 +34,7 @@ void roller() {
 //    }
 //    intakeMotor.moveVelocity(0);
 }
-
+#if 0
 void driveForward(double distance) {  
     okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.9, 0., 0.0093); //create a new drive object with specified pid
 
@@ -127,7 +127,7 @@ void driveBackward(double distance, double scalar=1) {
     drivePID.reset(); //reset everything to move relitive 
     drive -> getModel() -> tank(0, 0); //stop the drive once target is met
 }
-
+#endif
 
 void drive_dis(double distance, double scalar=1) {                                          //init 0.85
     if (abs(distance) <= 0.01)
@@ -156,6 +156,7 @@ void drive_dis(double distance, double scalar=1) {                              
         double dy = state_y - orgPosY;
 
         distTravelled = sqrt(dx * dx + dy * dy);
+
         if (distance < 0)
             distTravelled = -distTravelled;
 
@@ -315,13 +316,6 @@ void driveToPoint(double posX, double posY, bool backward, double speed){
 
   pros::lcd::set_text(4, ss.str());
 }
-
-
-
-
-
-
-
 
 void shootAtPointThread(void*){  
     okapi::Rate rate;

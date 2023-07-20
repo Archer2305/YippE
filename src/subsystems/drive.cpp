@@ -6,7 +6,6 @@ using namespace okapi;
 
 int state = 1; //state stores the brake mode of the drive where 1 is coast(default) and 2 is held 
 
-
 Motor rightFront(6, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
 Motor rightMiddle(12, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// the right motor on he top, back (drive)
 Motor rightBack(10, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// right motor on the bottom,back (drive)
@@ -24,7 +23,7 @@ std::shared_ptr<OdomChassisController> drive = ChassisControllerBuilder()
     .withMotors(leftDrive, rightDrive) //defines the left and right side of the drive
     // .withDimensions(  AbstractMotor::gearset::blue, {{3.25_in, 15_in}, okapi::imev5BlueTPR*  5./3.})
     .withDimensions(AbstractMotor::gearset::blue, {{3.25_in, 14_in}, okapi::imev5BlueTPR*  5./3.})
-    .withGains({0.86, 0.00, 0.0000}, {0.027, 0.00001, 0.00070})
+    //.withGains({0.86, 0.00, 0.0000}, {0.027, 0.00001, 0.00070})
     .withOdometry() //specifies the tracking wheels dimentions
     .buildOdometry();
     //this creates a drive as an object with PID and the default odometry functions, most of the default odom functions suck tho so we make our own in odom files
@@ -37,7 +36,6 @@ std::shared_ptr<AsyncMotionProfileController> profile_controller = AsyncMotionPr
     })
     .withOutput(drive)
     .buildMotionProfileController();
-
 
 void print_state(std::string title, const okapi::OdomState& os) {
     printf("%s: %lf, %lf, %lf\n", title.c_str(), 
@@ -86,7 +84,7 @@ void updateSkills() {
 
 void updateDrive() {
     // drive->getState().x.convert(okapi::foot);
-      pros::lcd::set_text(2, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+      pros::lcd::set_text(2, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the Y coordinate on the LCD of the screen per tick
       pros::lcd::set_text(1, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
 
       pros::lcd::set_text(3, std::to_string(inertial.controllerGet()));

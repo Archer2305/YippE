@@ -138,13 +138,14 @@ void opcontrol() {
 
 	// 	pros::delay(20);
 
+    okapi::Rate rate;       //wait does this need to be recontructed everytime it loops
+
 	while (true) {
       //band.set_value(true);    
-        okapi::Rate rate;       //wait does this need to be recontructed everytime it loops
 
         updateDrive();
 //      updateIntake();
-//      updateCata();
+        updateCata();
 //      updateSkills();
 //      updateExpansion();
 

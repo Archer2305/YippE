@@ -6,7 +6,6 @@ extern double targetX;
 extern double targetY;
 extern double invertedSlope;
 
-
 extern double initAngle;
 extern double targetF;
 extern double ogXPos;
