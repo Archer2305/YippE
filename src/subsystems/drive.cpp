@@ -6,13 +6,13 @@ using namespace okapi;
 
 int state = 1; //state stores the brake mode of the drive where 1 is coast(default) and 2 is held 
 
-Motor rightFront(6, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
-Motor rightMiddle(12, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// the right motor on he top, back (drive)
-Motor rightBack(10, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// right motor on the bottom,back (drive)
+Motor rightFront(19, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// motor for the front(drive)
+Motor rightMiddle(16, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// the right motor on he top, back (drive)
+Motor rightBack(18, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// right motor on the bottom,back (drive)
 
-Motor leftFront(2, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);//motor for the front (drive)
-Motor leftMiddle(18, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);//the right motor on he top, back (drive)
-Motor leftBack(5, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// left motor on the bottom,back (drive)
+Motor leftFront(12, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);//motor for the front (drive)
+Motor leftMiddle(15, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);//the right motor on he top, back (drive)
+Motor leftBack(2, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);// left motor on the bottom,back (drive)
 
 MotorGroup leftDrive({leftFront,leftMiddle,leftBack}); //define the left side of the drive as a motor group to allow cleaner code
 MotorGroup rightDrive({rightFront,rightMiddle,rightBack});//define the left side of the drive as a motor group to allow cleaner code
@@ -83,9 +83,14 @@ void updateSkills() {
 }
 
 void updateDrive() {
+    double cx = drive->getState().x.convert(okapi::foot);
+    double cy = drive->getState().y.convert(okapi::foot);
+
     // drive->getState().x.convert(okapi::foot);
-      pros::lcd::set_text(2, std::to_string(drive->getState().x.convert(okapi::foot))); //displays the Y coordinate on the LCD of the screen per tick
-      pros::lcd::set_text(1, std::to_string(drive->getState().y.convert(okapi::foot))); //displays the X coordinate on the LCD of the screen per tick
+      pros::lcd::set_text(2, std::to_string(cx)); //displays the Y coordinate on the LCD of the screen per tick
+      pros::lcd::set_text(1, std::to_string(cy)); //displays the X coordinate on the LCD of the screen per tick
+
+      //printf("x: %lf, y: %lf\n", cy, cx);
 
       pros::lcd::set_text(3, std::to_string(inertial.controllerGet()));
     // drive -> getModel() -> tank(-translate1.power, -translate1.power);

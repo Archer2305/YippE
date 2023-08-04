@@ -2,6 +2,7 @@
 #include "okapi/impl/device/controllerUtil.hpp" //random ass import, idk what it does but code breaks without it 
 // #include "pros/motors.h"
 Motor intakeMotor(19, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+
 void updateIntake(){
     if(!limSwitch.isPressed()){
         intakeMotor.moveVelocity(0);// stop if there is no input

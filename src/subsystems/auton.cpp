@@ -198,10 +198,11 @@ turnToAngle(-90);
     reset IMU when it is detected drifting when not moving*/
 
   if (route==10){
+    print_cur_state();
     pros::delay(280);
     //printf("init x: %lf, init y: %lf\n", drive->getState().y.convert(okapi::foot), drive->getState().x.convert(okapi::foot));
 
-    drive_dis(2, 1); 
+    //drive_dis(2, 1); 
     //driveToPoint(2, 2, false, 1); 
     //pros::delay(2000);
     //driveToPoint(1 , 1.732,false,1); ///should be 30

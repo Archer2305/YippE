@@ -1,6 +1,6 @@
 #include "main.h"
 
-okapi::IMU  inertial = IMU(16);
+okapi::IMU  inertial = IMU(5);
 
 double initAngle = 0;
 
@@ -133,7 +133,8 @@ void drive_dis(double distance, double scalar=1) {                              
     if (abs(distance) <= 0.01)
         return;
 
-    okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.86, 0.00, 0.0000);
+    okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.88, 0.00, 0.0000);
+    //prev: okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.86, 0.00, 0.0000);
     //okapi::IterativePosPIDController drivePID = okapi::IterativeControllerFactory::posPID(0.75, 0.01, 0.01); //create a new drive object with specified pid
 
     double target = distance; 
@@ -147,8 +148,8 @@ void drive_dis(double distance, double scalar=1) {                              
 
     double distTravelled = 0; 
 
-    while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
-     // while (true) {   
+    //while (abs(target-distTravelled) >= 0.2 || abs(leftDrive.getActualVelocity()) > 10){ //pid shit i think idk
+    while (true) {   
         double state_x = drive->getState().x.convert(okapi::foot);
         double state_y = drive->getState().y.convert(okapi::foot);
 

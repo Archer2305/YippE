@@ -88,7 +88,7 @@ void autonomous() {
 
     motors_init();
 
-	//updateAuton();
+	updateAuton();
 
 }
 
@@ -108,7 +108,7 @@ void autonomous() {
 
 void opcontrol() {
 	pros::delay(240);	
-//  drive_dis(2, 1);
+    //drive_dis(2, 1);
 /*
     auto cur_state = drive->getState();
     print_state("cur_state", cur_state);
@@ -145,7 +145,7 @@ void opcontrol() {
 
         updateDrive();
 //      updateIntake();
-        updateCata();
+//      updateCata();
 //      updateSkills();
 //      updateExpansion();
 
